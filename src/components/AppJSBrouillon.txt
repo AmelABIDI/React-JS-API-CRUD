@@ -1,0 +1,62 @@
+import React, {Component} from 'react';
+import './App.css';
+import UserForm from './components/UserForm';
+import InstructorApp from './components/InstructorApp';
+import ListClientsComponent from './components/ListClientsComponent';
+import axios from 'axios';
+class App extends Component{
+  constructor(props){
+    super(props);
+    this.state={
+      items: [],
+      isLoaded : false,
+    }
+  }
+
+
+  async componentDidMount(){
+    const url='http://localhost:8080/clients';
+    const response= await  fetch(url);
+    const data = await response.json()
+    /*  .then(res=> res.json)
+    .then(json=>{*/
+      console.log(data)
+    this.setState({isLoaded: true, items:data})
+    ; 
+  }
+  render(){
+
+    var {items, isLoaded} = this.state;
+
+    if(!isLoaded){
+      return <div>loading...</div>;
+    }else{
+      console.log(items.id)
+      return (
+        <div className="App">
+          <header className="App-header">
+            <h1 className="App-title">Clients</h1>
+          </header>
+          <div className="container">
+        <InstructorApp />
+        <ListClientsComponent/>
+      </div>
+          <UserForm getUser={this.getUser}/>
+          <ul>
+             {items.map(item=>
+             <li key={item.id}>
+               Nom : {item.nom} | Prénom : {item.prenom}
+             </li>
+              )}              
+          </ul>
+          
+        </div>
+      );
+    }
+      
+
+  }
+
+}
+
+export default App;
